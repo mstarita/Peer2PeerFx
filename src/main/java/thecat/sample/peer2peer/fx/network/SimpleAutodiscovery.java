@@ -1,8 +1,10 @@
 package thecat.sample.peer2peer.fx.network;
 
 import javafx.scene.control.ListView;
+import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscovery;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.List;
 
@@ -17,12 +19,14 @@ public class SimpleAutodiscovery {
 
     private String peerName = null;
     private ListView peerListView = null;
+    private SimpleMetroArcGauge peerNumberGauge = null;
 
     private AutoDiscovery autoDiscovery = new AutoDiscovery(UDP_PORT);
 
-    public SimpleAutodiscovery(String peerName, ListView peerListView) {
+    public SimpleAutodiscovery(String peerName, ListView peerListView, SimpleMetroArcGauge peerNumberGauge) {
         this.peerName = peerName;
         this.peerListView = peerListView;
+        this.peerNumberGauge = peerNumberGauge;
     }
 
     public void start() throws Exception {
@@ -30,7 +34,7 @@ public class SimpleAutodiscovery {
         autoDiscovery.setDebugEnabled(DEBUG_ENABLED);
         autoDiscovery.setSendBroadcastEvery(SEND_BROADCAST_SECONDS);
 
-        autoDiscovery.addListener(new SimpleAutodiscoveryListener(autoDiscovery, peerListView));
+        autoDiscovery.addListener(new SimpleAutodiscoveryListener(autoDiscovery, peerListView, peerNumberGauge));
 
         autoDiscovery.addParameter("peerName", peerName);
 

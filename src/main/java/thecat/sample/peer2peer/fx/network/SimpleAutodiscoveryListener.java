@@ -1,9 +1,11 @@
 package thecat.sample.peer2peer.fx.network;
 
 import javafx.scene.control.ListView;
+import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscovery;
 import net.gotev.autodiscovery.AutoDiscoveryListener;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
+import sun.java2d.pipe.SpanShapeRenderer;
 import thecat.sample.peer2peer.fx.bean.Peer;
 
 /**
@@ -12,11 +14,13 @@ import thecat.sample.peer2peer.fx.bean.Peer;
 public class SimpleAutodiscoveryListener implements AutoDiscoveryListener {
 
     private AutoDiscovery autoDiscovery = null;
-    private ListView<Peer> peerListView;
+    private ListView<Peer> peerListView = null;
+    private SimpleMetroArcGauge peerNumberGauge = null;
 
-    public SimpleAutodiscoveryListener(AutoDiscovery autoDiscovery, ListView peerListView) {
+    public SimpleAutodiscoveryListener(AutoDiscovery autoDiscovery, ListView peerListView, SimpleMetroArcGauge peerNumberGauge) {
         this.autoDiscovery = autoDiscovery;
         this.peerListView = peerListView;
+        this.peerNumberGauge = peerNumberGauge;
     }
 
     @Override
@@ -37,6 +41,7 @@ public class SimpleAutodiscoveryListener implements AutoDiscoveryListener {
 
         peerListView.getItems().add(newPeer);
 
+        peerNumberGauge.setValue(peerNumberGauge.getValue() + 1);
     }
 
     @Override
@@ -48,6 +53,8 @@ public class SimpleAutodiscoveryListener implements AutoDiscoveryListener {
 
             peerListView.getItems().add(newPeer);
         }
+
+        peerNumberGauge.setValue(peerNumberGauge.getValue() - 1);
 
     }
 

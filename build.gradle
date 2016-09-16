@@ -42,9 +42,11 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
 
-    compile fileTree(include: '*.jar', dir: 'libs')
-
     compile 'org.controlsfx:controlsfx:8.40.12'
+    compile 'org.jfxtras:jfxtras-controls:8.0-r5'
+    compile 'org.jfxtras:jfxtras-gauge-linear:8.0-r5'
+
+    compile fileTree(include: '*.jar', dir: 'libs')
 }
 
 task fatJar(type: Jar) {

@@ -1,11 +1,12 @@
 package thecat.sample.peer2peer.fx;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 import org.controlsfx.control.PopOver;
 import thecat.sample.peer2peer.fx.bean.Peer;
@@ -33,16 +34,25 @@ public class Controller implements Initializable {
     @FXML private Button sendToAllButton;
     @FXML private Button sendToPeerButton;
 
+    @FXML private VBox leftPanelVBox;
+
     private boolean joined = false;
 
     private SimpleAutodiscovery autoDiscovery;
     private SimpleServer simpleServer;
+
+    private SimpleMetroArcGauge peerNumberGauge;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         setupUiForNetworkState();
 
+        peerNumberGauge = new SimpleMetroArcGauge();
+        peerNumberGauge.setValue(0);
+        peerNumberGauge.setMaxValue(10);
+        peerNumberGauge.setMinValue(0);
+        leftPanelVBox.getChildren().add(peerNumberGauge);
     }
 
     private void setupUiForNetworkState() {
@@ -90,7 +100,7 @@ public class Controller implements Initializable {
 
         if (!peerNameField.getText().isEmpty()) {
 
-            autoDiscovery = new SimpleAutodiscovery(peerNameField.getText(), peerList);
+            autoDiscovery = new SimpleAutodiscovery(peerNameField.getText(), peerList, peerNumberGauge);
             simpleServer = new SimpleServer(autoDiscovery, receivedText);
 
             try {
