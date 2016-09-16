@@ -87,6 +87,8 @@ public class Controller implements Initializable {
                 simpleServer.stop();
 
                 peerList.getItems().clear();
+
+                peerNumberGauge.setValue(0);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
