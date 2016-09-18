@@ -4,7 +4,6 @@ import javafx.scene.control.ListView;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscovery;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.List;
 

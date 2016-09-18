@@ -17,7 +17,7 @@ public class Main extends Application {
         controller = loader.getController();
 
         primaryStage.setTitle("Peer2PeerFx");
-        primaryStage.setScene(new Scene(root, 800, 400));
+        primaryStage.setScene(new Scene(root, 800, 480));
         primaryStage.getScene().getStylesheets().add
                 (Main.class.getClassLoader().getResource("css/style.css").toExternalForm());
         primaryStage.show();

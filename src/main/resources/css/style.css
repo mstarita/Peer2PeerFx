@@ -32,8 +32,8 @@
 }
 
 .prompt_text {
-    -fx-Text-fill: #9f9f9f;
-    -fx-font-size: 13px;
+    -fx-Text-fill: #000000;
+    -fx-font-size: 35px;
     -fx-font-family: "Arial";
     -fx-font-weight: bold;
 }

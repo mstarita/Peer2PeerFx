@@ -1,9 +1,13 @@
 package thecat.sample.peer2peer.fx;
 
+import eu.hansolo.enzo.lcd.Lcd;
+import eu.hansolo.enzo.lcd.LcdBuilder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
@@ -15,6 +19,7 @@ import thecat.sample.peer2peer.fx.network.SimpleClient;
 import thecat.sample.peer2peer.fx.network.SimpleServer;
 
 import java.net.URL;
+import java.security.cert.PolicyNode;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -35,6 +40,8 @@ public class Controller implements Initializable {
     @FXML private Button sendToPeerButton;
 
     @FXML private VBox leftPanelVBox;
+    @FXML private Pane peerListPane;
+    @FXML Pane receivedTextPane;
 
     private boolean joined = false;
 
@@ -42,17 +49,32 @@ public class Controller implements Initializable {
     private SimpleServer simpleServer;
 
     private SimpleMetroArcGauge peerNumberGauge;
+    private Lcd messagesLcd;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        setupUiForNetworkState();
 
         peerNumberGauge = new SimpleMetroArcGauge();
         peerNumberGauge.setValue(0);
         peerNumberGauge.setMaxValue(10);
         peerNumberGauge.setMinValue(0);
-        leftPanelVBox.getChildren().add(peerNumberGauge);
+        peerListPane.getChildren().add(peerNumberGauge);
+        peerNumberGauge.toBack();
+
+        messagesLcd = LcdBuilder
+                .create()
+                .title("Message received")
+                .titleVisible(true)
+                .value(0)
+                .keepAspect(false)
+                .valueFont(Lcd.LcdFont.ELEKTRA)
+                .animated(true)
+                .build();
+        receivedTextPane.getChildren().add(messagesLcd);
+        messagesLcd.toBack();
+
+        setupUiForNetworkState();
+
     }
 
     private void setupUiForNetworkState() {
@@ -69,6 +91,7 @@ public class Controller implements Initializable {
         sendToAllButton.setDisable(!joined);
         sendToPeerButton.setDisable(!joined);
 
+        messagesLcd.setValue(0);
     }
 
     private void switchJoined() {
@@ -103,7 +126,7 @@ public class Controller implements Initializable {
         if (!peerNameField.getText().isEmpty()) {
 
             autoDiscovery = new SimpleAutodiscovery(peerNameField.getText(), peerList, peerNumberGauge);
-            simpleServer = new SimpleServer(autoDiscovery, receivedText);
+            simpleServer = new SimpleServer(autoDiscovery, receivedText, messagesLcd);
 
             try {
                 autoDiscovery.start();
@@ -120,6 +143,7 @@ public class Controller implements Initializable {
 
     }
 
+    @FXML
     public void sendTo(ActionEvent actionEvent) {
 
         if (joined && null != autoDiscovery) {
@@ -128,19 +152,21 @@ public class Controller implements Initializable {
                 for (AutoDiscoveryPeer peer : autoDiscovery.getPeers()) {
                     SimpleClient.send(peer.getIpAddress(), sendText.getText());
                 }
-
-                appendMessage();
-
             } catch (Exception ex) {
                 ex.printStackTrace();
+
+                // TODO fill on the app log panel the exception
             }
 
+            appendMessage();
+            sendText.setText("");
         } else {
             PopOver popOver = createPopOver("Please join the network...");
             popOver.show(sendToAllButton);
         }
     }
 
+    @FXML
     public void sendToPeer(ActionEvent actionEvent) {
 
         if (joined) {
@@ -150,11 +176,14 @@ public class Controller implements Initializable {
                     Peer peer = (Peer) peerList.getSelectionModel().getSelectedItem();
                     SimpleClient.send(peer.getIpAddress(), sendText.getText());
 
-                    appendMessage();
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
+
+                    // TODO fill on the app log panel the exception
                 }
+
+                appendMessage();
+                sendText.setText("");
             }
         } else {
             PopOver popOver = createPopOver("Please join the network...");
@@ -165,7 +194,8 @@ public class Controller implements Initializable {
     private void appendMessage() {
         StringBuilder sbMsg = new StringBuilder();
         sbMsg.append(autoDiscovery.getPeerName()).append(": ").append(sendText.getText());
-        receivedText.setText(receivedText.getText() + '\n' + sbMsg);
+        receivedText.setText(receivedText.getText() + '\n' + sbMsg.toString());
+        messagesLcd.setValue(messagesLcd.getValue() + 1);
     }
 
     public SimpleAutodiscovery getAutoDiscovery() {

@@ -23,7 +23,11 @@
                         <Button fx:id="joinButton" mnemonicParsing="false" text="Join..." onAction="#onJoin"/>
                      </children>
                   </StackPane>
-                  <ListView fx:id="peerList" />
+                  <StackPane fx:id="peerListPane">
+                     <children>
+                        <ListView fx:id="peerList" opacity="0.80"/>
+                     </children>
+                  </StackPane>
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -39,27 +43,18 @@
                         <Font name="System Bold" size="33.0" />
                      </font>
                   </Label>
-                  <AnchorPane>
+                  <StackPane fx:id="receivedTextPane">
                      <children>
-                        <TextArea fx:id="receivedText" layoutY="20.0" prefHeight="182.0" prefWidth="416.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" editable="false"/>
-                        <Label layoutX="450.0" layoutY="127.0" text="Received Text" styleClass="prompt_text">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
+                        <TextArea fx:id="receivedText" layoutY="20.0" prefHeight="182.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" editable="false" opacity="0.86"/>
                      </children>
-                  </AnchorPane>
-                  <AnchorPane>
+                  </StackPane>
+                  <StackPane fx:id="sendTextPane">
                      <children>
-                        <TextArea fx:id="sendText" layoutY="15.0" prefHeight="175.0" prefWidth="533.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Label layoutX="450.0" layoutY="120.0" minWidth="80.0" text="Send Text" styleClass="prompt_text">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
+                        <Label layoutX="450.0" layoutY="120.0" minWidth="80.0" text="Please enter a message" styleClass="prompt_text" />
+                        <TextArea fx:id="sendText" layoutY="15.0" prefHeight="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" opacity="0.86"/>
                      </children>
-                  </AnchorPane>
-                  <HBox alignment="TOP_CENTER" spacing="5.0">
+                  </StackPane>
+                  <HBox fx:id="messageButtonPanelBox" alignment="CENTER" spacing="5.0">
                      <children>
                         <Button fx:id="sendToAllButton" mnemonicParsing="false" text="Send..." onAction="#sendTo"/>
                         <Button fx:id="sendToPeerButton" mnemonicParsing="false" text="Send to sel peer..." onAction="#sendToPeer"/>
@@ -69,7 +64,11 @@
                      </VBox.margin>
                   </HBox>
                </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
             </VBox>
-         </children></AnchorPane>
+         </children>
+    </AnchorPane>
   </items>
 </SplitPane>

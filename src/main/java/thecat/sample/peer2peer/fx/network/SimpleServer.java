@@ -3,6 +3,8 @@ package thecat.sample.peer2peer.fx.network;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import eu.hansolo.enzo.lcd.Lcd;
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 
@@ -13,13 +15,15 @@ public class SimpleServer {
 
     public static final int DEFAULT_PORT = 7171;
     private final TextArea receivedText;
+    private final Lcd messageLcd;
 
     private Server server = null;
     private SimpleAutodiscovery autoDiscovery;
 
-    public SimpleServer(SimpleAutodiscovery autoDiscovery, TextArea receivedText) {
+    public SimpleServer(SimpleAutodiscovery autoDiscovery, TextArea receivedText, Lcd messageLcd) {
         this.autoDiscovery = autoDiscovery;
         this.receivedText = receivedText;
+        this.messageLcd = messageLcd;
     }
 
     public void start() throws Exception {
@@ -43,12 +47,23 @@ public class SimpleServer {
                     for (AutoDiscoveryPeer aPeer : autoDiscovery.getPeers()) {
                         if (aPeer.getIpAddress().equals(peerAddress)) {
                             sb.append(aPeer.getParameter("peerName"));
+                            break;
                         }
                     }
 
+                    if (sb.length() == 0) {
+                        sb.append("???");
+                    }
                     sb.append(": ").append(code);
 
-                    receivedText.setText(receivedText.getText() + '\n' + sb.toString());
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            receivedText.setText(receivedText.getText() + '\n' + sb.toString());
+                            messageLcd.setValue(messageLcd.getValue() + 1);
+                        }
+                    });
+
                 }
             }
         });
