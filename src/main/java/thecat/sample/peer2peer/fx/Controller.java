@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 import org.controlsfx.control.PopOver;
+import thecat.sample.peer2peer.fx.animation.ExecuteAfterDuration;
 import thecat.sample.peer2peer.fx.animation.FadeOutIn;
 import thecat.sample.peer2peer.fx.bean.Peer;
 import thecat.sample.peer2peer.fx.network.SimpleAutodiscovery;
@@ -171,6 +172,16 @@ public class Controller implements Initializable {
 
             Platform.runLater(() -> {
                 appendMessage();
+
+                messagesLcd.setBlinking(true);
+                ExecuteAfterDuration blink = new ExecuteAfterDuration(
+                        messagesLcd,
+                        Duration.seconds(2),
+                        event -> {
+                    messagesLcd.setBlinking(false);
+                });
+                blink.play();
+
                 sendText.setText("");
             });
         } else {
@@ -211,7 +222,10 @@ public class Controller implements Initializable {
         StringBuilder sbMsg = new StringBuilder();
         sbMsg.append(autoDiscovery.getPeerName()).append(": ").append(sendText.getText());
         receivedText.setText(receivedText.getText() + '\n' + sbMsg.toString());
+
         messagesLcd.setValue(messagesLcd.getValue() + 1);
+
+        receivedText.setScrollTop(Double.MAX_VALUE);
     }
 
     public SimpleAutodiscovery getAutoDiscovery() {
