@@ -2,24 +2,25 @@ package thecat.sample.peer2peer.fx;
 
 import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 import org.controlsfx.control.PopOver;
+import thecat.sample.peer2peer.fx.animation.FadeOutIn;
 import thecat.sample.peer2peer.fx.bean.Peer;
 import thecat.sample.peer2peer.fx.network.SimpleAutodiscovery;
 import thecat.sample.peer2peer.fx.network.SimpleClient;
 import thecat.sample.peer2peer.fx.network.SimpleServer;
 
 import java.net.URL;
-import java.security.cert.PolicyNode;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -73,16 +74,26 @@ public class Controller implements Initializable {
         receivedTextPane.getChildren().add(messagesLcd);
         messagesLcd.toBack();
 
-        setupUiForNetworkState();
+        setupUiForNetworkState(true);
 
     }
 
-    private void setupUiForNetworkState() {
+    private void setupUiForNetworkState(boolean init) {
 
-        if (!joined) {
-            peer_name.setText("Join the network...");
-        } else {
-            peer_name.setText(peerNameField.getText());
+        if (!init) {
+            FadeOutIn fadeOutIn = new FadeOutIn(
+                    peer_name,
+                    Duration.seconds(1),
+                    Duration.seconds(2),
+                    event -> {
+                        if (!joined) {
+                            peer_name.setText("Join the network...");
+                        } else {
+                            peer_name.setText(peerNameField.getText());
+                        }
+                    });
+
+            fadeOutIn.play();
         }
 
         joinButton.setVisible(!joined);
@@ -97,7 +108,7 @@ public class Controller implements Initializable {
     private void switchJoined() {
 
         joined = !joined;
-        setupUiForNetworkState();
+        setupUiForNetworkState(false);
 
     }
 
@@ -148,18 +159,20 @@ public class Controller implements Initializable {
 
         if (joined && null != autoDiscovery) {
 
-            try {
-                for (AutoDiscoveryPeer peer : autoDiscovery.getPeers()) {
+            for (AutoDiscoveryPeer peer : autoDiscovery.getPeers()) {
+                try {
                     SimpleClient.send(peer.getIpAddress(), sendText.getText());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
 
-                // TODO fill on the app log panel the exception
+                    // TODO fill on the app log panel the exception
+                }
             }
 
-            appendMessage();
-            sendText.setText("");
+            Platform.runLater(() -> {
+                appendMessage();
+                sendText.setText("");
+            });
         } else {
             PopOver popOver = createPopOver("Please join the network...");
             popOver.show(sendToAllButton);
@@ -182,8 +195,11 @@ public class Controller implements Initializable {
                     // TODO fill on the app log panel the exception
                 }
 
-                appendMessage();
-                sendText.setText("");
+                Platform.runLater(() -> {
+                    appendMessage();
+                    sendText.setText("");
+                });
+
             }
         } else {
             PopOver popOver = createPopOver("Please join the network...");
