@@ -14,7 +14,7 @@ import javafx.util.Duration;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 import org.controlsfx.control.PopOver;
-import thecat.sample.peer2peer.fx.animation.ExecuteAfterDuration;
+import thecat.sample.peer2peer.fx.animation.ExecuteAfterPause;
 import thecat.sample.peer2peer.fx.animation.FadeOutIn;
 import thecat.sample.peer2peer.fx.bean.Peer;
 import thecat.sample.peer2peer.fx.network.SimpleAutodiscovery;
@@ -174,8 +174,7 @@ public class Controller implements Initializable {
                 appendMessage();
 
                 messagesLcd.setBlinking(true);
-                ExecuteAfterDuration blink = new ExecuteAfterDuration(
-                        messagesLcd,
+                ExecuteAfterPause blink = new ExecuteAfterPause(
                         Duration.seconds(2),
                         event -> {
                     messagesLcd.setBlinking(false);
