@@ -8,7 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import javafx.util.Duration;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
-import thecat.sample.peer2peer.fx.animation.ExecuteAfterPause;
+import thecat.sample.peer2peer.fx.animation.ExecuteWithDelay;
 
 /**
  * Created by thecat on 15/09/16.
@@ -67,7 +67,7 @@ public class SimpleServer {
                             receivedText.setScrollTop(Double.MAX_VALUE);
 
                             messagesLcd.setBlinking(true);
-                            ExecuteAfterPause blink = new ExecuteAfterPause(
+                            ExecuteWithDelay blink = new ExecuteWithDelay(
                                     Duration.seconds(2),
                                     event -> {
                                 messagesLcd.setBlinking(false);

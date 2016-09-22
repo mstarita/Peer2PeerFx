@@ -7,14 +7,14 @@ import javafx.util.Duration;
 /**
  * Created by thecat on 18/09/16.
  */
-public class ExecuteAfterPause {
+public class ExecuteWithDelay {
 
     private final Duration sleepDuration;
     private final EventHandler onEndPause;
 
     private PauseTransition pauseTransition;
 
-    public ExecuteAfterPause(Duration sleepDuration, EventHandler onEndPause) {
+    public ExecuteWithDelay(Duration sleepDuration, EventHandler onEndPause) {
         this.sleepDuration = sleepDuration;
         this.onEndPause = onEndPause;
     }

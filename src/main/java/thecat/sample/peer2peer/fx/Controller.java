@@ -14,7 +14,7 @@ import javafx.util.Duration;
 import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import net.gotev.autodiscovery.AutoDiscoveryPeer;
 import org.controlsfx.control.PopOver;
-import thecat.sample.peer2peer.fx.animation.ExecuteAfterPause;
+import thecat.sample.peer2peer.fx.animation.ExecuteWithDelay;
 import thecat.sample.peer2peer.fx.animation.FadeOutIn;
 import thecat.sample.peer2peer.fx.bean.Peer;
 import thecat.sample.peer2peer.fx.network.SimpleAutodiscovery;
@@ -149,8 +149,9 @@ public class Controller implements Initializable {
                 ex.printStackTrace();
             }
         } else {
-            PopOver popOver = createPopOver("Please specify the peer name");
-            popOver.show(peerNameField);
+
+            showToolTip("Please specify the peer name.");
+
         }
 
     }
@@ -174,7 +175,7 @@ public class Controller implements Initializable {
                 appendMessage();
 
                 messagesLcd.setBlinking(true);
-                ExecuteAfterPause blink = new ExecuteAfterPause(
+                ExecuteWithDelay blink = new ExecuteWithDelay(
                         Duration.seconds(2),
                         event -> {
                     messagesLcd.setBlinking(false);
@@ -184,8 +185,9 @@ public class Controller implements Initializable {
                 sendText.setText("");
             });
         } else {
-            PopOver popOver = createPopOver("Please join the network...");
-            popOver.show(sendToAllButton);
+
+            showToolTip("Please join the network...");
+
         }
     }
 
@@ -212,8 +214,9 @@ public class Controller implements Initializable {
 
             }
         } else {
-            PopOver popOver = createPopOver("Please join the network...");
-            popOver.show(sendToPeerButton);
+
+            showToolTip("Please join the network...");
+
         }
     }
 
@@ -235,13 +238,19 @@ public class Controller implements Initializable {
         return simpleServer;
     }
 
-    private PopOver createPopOver(String message) {
-        PopOver popOver = new PopOver();
-        popOver.setAutoHide(true);
-        popOver.setAnimated(true);
+    private void showToolTip(String message) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setText(message);
+        tooltip.setStyle("-fx-background-color: #7f7f7f; -fx-font-size: 24px; -fx-Text-fill: #fbfbfb;");
+        tooltip.show(joinButton.getScene().getWindow());
 
-        popOver.setContentNode(new Text(message));
-        return popOver;
+        ExecuteWithDelay executeWithDelay = new ExecuteWithDelay(
+                Duration.seconds(2),
+                event -> {
+                    tooltip.hide();
+                }
+        );
+        executeWithDelay.play();
     }
 
 }
